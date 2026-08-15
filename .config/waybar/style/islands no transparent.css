@@ -68,44 +68,54 @@ tooltip label{
 #taskbar button,
 #workspaces button {
 	color: @outline;
-    box-shadow: none;
-	  text-shadow: none;
-	  padding: 0px;
-	  padding-bottom: 0px;
-	  padding-top: 1px;
-    border-radius: 9px;
-    padding-left: 4px;
-    padding-right: 4px;
-    animation: gradient_f 20s ease-in infinite;
-    transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.682);
+	background-color: transparent;
+	box-shadow: none;
+	text-shadow: none;
+	padding: 0px 6px;
+	margin: 0 2px;
+	border-radius: 12px;
+	border: none;
+	transition: all 0.2s ease;
 }
+
 #taskbar button:hover,
 #workspaces button:hover {
-    color: @primary;
-    border-radius: 20px;
- 	  padding-left: 2px;
-    padding-right: 2px;
-    animation: gradient_f 20s ease-in infinite;
-    transition: none;
+	color: @on_surface;
+	background-color: alpha(@surface_container_highest, 0.85);
+	padding: 0px 6px;
+	margin: 0 2px;
+	border-radius: 12px;
+	transition: all 0.15s ease;
 }
 
 #taskbar button.active,
 #workspaces button.active {
-	color: @background;
-	  background-color: alpha(@primary_fixed, 1);
-    padding-left: 10px;
-    padding-right: 10px;
-    animation: gradient_f 20s ease-in infinite;
-    transition: none;
+	color: @on_primary_fixed;
+	background-color: alpha(@primary_fixed, 1);
+	padding: 0px 10px;
+	margin: 0 2px;
+	border-radius: 12px;
+	font-weight: bold;
+	transition: all 0.2s ease;
+}
+
+#taskbar button.active:hover,
+#workspaces button.active:hover {
+	color: @on_primary_fixed;
+	background-color: alpha(@primary_fixed, 0.85);
+	padding: 0px 10px;
+	margin: 0 2px;
+	border-radius: 12px;
 }
 
 #workspaces button.urgent {
-    color: @primary;
-    border-radius: 10px;
+	color: @error;
+	background-color: alpha(@error_container, 0.8);
+	border-radius: 12px;
 }
 
 #workspaces button.persistent {
-	border-radius: 10px;
+	border-radius: 12px;
 }
 
 #custom-swaync {
