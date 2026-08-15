@@ -1,18 +1,15 @@
 #include <glib.h>
 #include <glib-object.h>
 #include <playerctl/playerctl.h>
-#include <pango/pangocairo.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #define DEFAULT_WIDTH 34
-#define DEFAULT_FRAME_MS 120
-#define NBSP "\xc2\xa0"
+#define DEFAULT_FRAME_MS 140
+#define PAUSE_FRAMES 14 /* Hold ~2 seconds at start and end of scroll */
 
 typedef struct {
-	PangoLayout *pango_layout;
-
 	PlayerctlPlayerManager *manager;
 	GPtrArray *players;
 
@@ -25,6 +22,7 @@ typedef struct {
 	guint frame_ms;
 	gint offset;
 	gint dir;
+	gint pause_ticks;
 
 	guint timer_id;
 	gchar *last_frame;
@@ -65,79 +63,70 @@ utf8_display_width(const gchar *s)
 	return w;
 }
 
-static gchar *
-center_text(const gchar *s, gint width, gint total)
+static gint
+compute_max_offset(const gchar *s, gint width)
 {
-	gint pad = (width - total) / 2;
+	gint total_glyphs = (gint)g_utf8_strlen(s, -1);
+	if (total_glyphs <= 0)
+		return 0;
+
+	const gchar *p = s;
+	gint max_off = 0;
+	for (gint i = 0; i < total_glyphs; i++) {
+		gint rem_width = utf8_display_width(p);
+		if (rem_width <= width) {
+			max_off = i;
+			break;
+		}
+		max_off = i;
+		p = g_utf8_next_char(p);
+	}
+	return max_off;
+}
+
+static gchar *
+center_text(const gchar *s, gint width, gint total_cols)
+{
+	if (total_cols >= width)
+		return g_strdup(s);
+	gint pad_left = (width - total_cols) / 2;
+	gint pad_right = width - total_cols - pad_left;
 	GString *out = g_string_new(NULL);
-	for (gint i = 0; i < pad; i++)
+	for (gint i = 0; i < pad_left; i++)
 		g_string_append_c(out, ' ');
 	g_string_append(out, s);
-	for (gint i = pad + total; i < width; i++)
+	for (gint i = 0; i < pad_right; i++)
 		g_string_append_c(out, ' ');
 	return g_string_free(out, FALSE);
 }
 
 static gchar *
-slice_window(const gchar *s, gint glyph, gint width)
+slice_window(const gchar *s, gint glyph_offset, gint width)
 {
 	GString *out = g_string_new(NULL);
 	const gchar *p = s;
-	for (gint i = 0; i < glyph && *p; i++)
+	for (gint i = 0; i < glyph_offset && *p; i++)
 		p = g_utf8_next_char(p);
 
 	gint used = 0;
 	while (*p && used < width) {
 		gunichar ch = g_utf8_get_char(p);
 		gint cw = char_columns(ch);
-		if (used + cw > width)
+		if (used + cw > width) {
+			/* Wide char cannot fit in the last 1 column, pad 1 space */
+			g_string_append_c(out, ' ');
+			used++;
 			break;
-		g_string_append_len(out, p, (gssize)(g_utf8_next_char(p) - p));
+		}
+		const gchar *next = g_utf8_next_char(p);
+		g_string_append_len(out, p, (gssize)(next - p));
 		used += cw;
-		p = g_utf8_next_char(p);
+		p = next;
 	}
 	while (used < width) {
 		g_string_append_c(out, ' ');
 		used++;
 	}
-	return g_string_free(out, FALSE);
-}
-
-static gint
-pango_px(const gchar *s)
-{
-	pango_layout_set_text(app.pango_layout, s, -1);
-	gint w = 0, h = 0;
-	pango_layout_get_pixel_size(app.pango_layout, &w, &h);
-	return w;
-}
-
-static gchar *
-center_nbsp(const gchar *s, gint target_px)
-{
-	gint len = (gint)strlen(s);
-	while (len > 0 && s[len - 1] == ' ')
-		len--;
-	gchar *vis = g_strndup(s, len);
-	gint cur = pango_px(vis);
-	if (cur >= target_px) {
-		g_free(vis);
-		return g_strdup(s);
-	}
-	gint nbsp = (target_px - cur) / 8;
-	if (nbsp < 1) {
-		g_free(vis);
-		return g_strdup(s);
-	}
-	gint left = nbsp / 2;
-	gint right = nbsp - left;
-	GString *out = g_string_new(NULL);
-	for (gint i = 0; i < left; i++)
-		g_string_append(out, NBSP);
-	g_string_append(out, vis);
-	for (gint i = 0; i < right; i++)
-		g_string_append(out, NBSP);
-	g_free(vis);
 	return g_string_free(out, FALSE);
 }
 
@@ -158,23 +147,26 @@ emit_frame(void)
 		const gchar *t = app.title ? app.title : "";
 		combined = g_strdup_printf("%s - %s", a, t);
 		gint total = utf8_display_width(combined);
+
 		if (total <= app.width) {
 			text = center_text(combined, app.width, total);
 		} else {
-			gint last = (gint)g_utf8_strlen(combined, -1) - 1;
-			app.offset += app.dir;
-			if (app.offset >= last) {
-				app.offset = last;
-				app.dir = -1;
-			}
-			if (app.offset <= 0) {
-				app.offset = 0;
-				app.dir = 1;
+			gint max_offset = compute_max_offset(combined, app.width);
+			if (app.pause_ticks > 0) {
+				app.pause_ticks--;
+			} else {
+				app.offset += app.dir;
+				if (app.offset >= max_offset) {
+					app.offset = max_offset;
+					app.dir = -1;
+					app.pause_ticks = PAUSE_FRAMES;
+				} else if (app.offset <= 0) {
+					app.offset = 0;
+					app.dir = 1;
+					app.pause_ticks = PAUSE_FRAMES;
+				}
 			}
 			text = slice_window(combined, app.offset, app.width);
-			gchar *centered = center_nbsp(text, 280);
-			g_free(text);
-			text = centered;
 		}
 	} else {
 		text = g_strdup("");
@@ -308,6 +300,7 @@ refresh_active(PlayerctlPlayer *player, gpointer unused, gpointer user_data)
 
 	app.offset = 0;
 	app.dir = 1;
+	app.pause_ticks = PAUSE_FRAMES;
 	sync_timer();
 	emit_frame();
 }
@@ -347,12 +340,6 @@ main(int argc, char **argv)
 	if (app.frame_ms < 1)
 		app.frame_ms = DEFAULT_FRAME_MS;
 
-	cairo_surface_t *surf = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, 16, 16);
-	cairo_t *cr = cairo_create(surf);
-	app.pango_layout = pango_cairo_create_layout(cr);
-	pango_layout_set_font_description(app.pango_layout,
-		pango_font_description_from_string("JetBrainsMono Nerd Font Propo Bold 10"));
-
 	app.players = g_ptr_array_new();
 	app.status = g_strdup("Stopped");
 	app.player_name = g_strdup("");
@@ -360,6 +347,7 @@ main(int argc, char **argv)
 	app.title = g_strdup("");
 	app.offset = 0;
 	app.dir = 1;
+	app.pause_ticks = PAUSE_FRAMES;
 	app.timer_id = 0;
 	app.last_frame = NULL;
 
