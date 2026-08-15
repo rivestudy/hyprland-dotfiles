@@ -175,6 +175,12 @@ tooltip label{
 	padding-right: 6px;
 	padding-left: 6px;
 }
+/*-----Media pill: stable width + smooth fade on title change-----*/
+#custom-playerctl {
+	font-family: "JetBrainsMono Nerd Font", "Noto Sans Mono CJK JP", "Noto Sans Mono CJK KR", monospace;
+	min-width: 280px;
+	min-height: 25px;
+}
 /*-----Indicators----*/
 #custom-hypridle.notactive,
 #idle_inhibitor.activated {

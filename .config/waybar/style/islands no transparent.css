@@ -185,9 +185,9 @@ tooltip label{
 }
 /*-----Media pill: stable width + smooth fade on title change-----*/
 #custom-playerctl {
+	font-family: "JetBrainsMono Nerd Font", "Noto Sans Mono CJK JP", "Noto Sans Mono CJK KR", monospace;
 	min-width: 280px;
 	min-height: 25px;
-	transition: all 0.3s cubic-bezier(.55,-0.68,.48,1.682);
 }
 /*-----Indicators----*/
 #custom-hypridle.notactive,
