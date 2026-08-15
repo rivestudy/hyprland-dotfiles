@@ -1,0 +1,46 @@
+/* ---- 💫 https://github.com/JaKooLit 💫 ---- */
+
+/* Center-focused layout: workspaces+clock+mpris in center, minimal sides */
+{
+"include": [
+  "$HOME/.config/waybar/Modules",
+  "$HOME/.config/waybar/ModulesWorkspaces",
+  "$HOME/.config/waybar/ModulesCustom",
+  "$HOME/.config/waybar/ModulesGroups",
+  "$HOME/.config/waybar/UserModules",
+  ],
+"layer": "bottom",
+//"mode": "dock",
+"exclusive": true,
+"passthrough": false,
+"position": "top",
+"spacing": 3,
+"fixed-center": true,
+"ipc": true,
+"margin-top": 5,
+"margin-left": 8,
+"margin-right": 8,
+
+"modules-left": [
+	"tray",
+        "custom/separator#blank",
+        "custom/weather",
+	],
+
+"modules-center": [
+        "hyprland/workspaces#alpha",
+        "custom/separator#blank",
+        "clock#4",
+        "custom/separator#blank",
+        "custom/playerctl",
+	],
+
+"modules-right": [
+        "group/notify",
+	"battery",
+	"custom/separator#blank",
+	"group/audio",
+	"custom/separator#blank",
+	"custom/power",
+	],
+}

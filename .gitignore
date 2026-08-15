@@ -1,0 +1,21 @@
+# Compiled binaries & objects
+*.o
+*.so
+.config/hypr/scripts/mpris-scroll
+!.config/hypr/scripts/mpris-scroll.c
+
+# Backups & temp files
+*.bak
+*.bak.*
+*~
+*.swp
+*.swo
+newfile
+
+# Python
+__pycache__/
+*.py[cod]
+
+# OS junk
+.DS_Store
+Thumbs.db
