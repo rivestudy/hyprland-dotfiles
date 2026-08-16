@@ -47,13 +47,19 @@
 		"disk",
 	]
 },
-"group/laptop": {
+"group/weather": {
 	"orientation": "inherit",
+	"drawer": {
+		"transition-duration": 300,
+		"children-class": "weather",
+		"transition-left-to-right": true
+	},
 	"modules": [
-		"backlight",
-		"battery",
+		"custom/weather",
+		"custom/weather_settings"
 	]
 },
+
 "group/audio": {
 	"orientation": "inherit",
 	"drawer": {

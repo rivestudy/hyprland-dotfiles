@@ -9,10 +9,21 @@
 	"format": "{}",
 	"format-alt": "{alt}: {}",
 	"format-alt-click": "click",
-	"interval": 3600,
+	"interval": 1800,
 	"return-type": "json",
 	"exec": "python3 /home/galang/.config/hypr/UserScripts/Weather.py",
+	"on-click": "python3 /home/galang/.config/hypr/UserScripts/Weather.py --menu",
+	"on-click-right": "python3 /home/galang/.config/hypr/UserScripts/Weather.py --config",
+	"on-click-middle": "python3 /home/galang/.config/hypr/UserScripts/Weather.py --refresh",
+	"signal": 8,
 	"tooltip": true
+},
+
+"custom/weather_settings": {
+	"format": "",
+	"on-click": "python3 /home/galang/.config/hypr/UserScripts/Weather.py --config",
+	"tooltip": true,
+	"tooltip-format": "Weather Settings\nLeft Click: ⚙️ Change City / Location"
 },
 
 "custom/display": {
