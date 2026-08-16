@@ -20,7 +20,7 @@ fi
 
 # Detect internal (laptop) display
 INTERNAL_MON="$(python3 -c "
-import json, sys
+import json
 data = json.loads('''$MONITORS_JSON''')
 internal = None
 for m in data:
@@ -46,12 +46,12 @@ FIRST_EXT="$(echo "$EXTERNAL_MONS" | awk '{print $1}')"
 
 if [[ -z "$FIRST_EXT" ]]; then
     # No external monitor connected
-    OPTIONS="󰑓 Reset Laptop Display (auto, 1x)\n⚙️ Toggle Laptop Display Off/On"
+    OPTIONS="󰑓 Reset Laptop Display (auto, 1x)"
     CHOICE="$(echo -e "$OPTIONS" | rofi -i -dmenu -config "$ROFI_CONFIG" -mesg "Display: No external monitor detected ($INTERNAL_MON)")"
     
     case "$CHOICE" in
         *"Reset Laptop Display"*)
-            hyprctl keyword monitor "$INTERNAL_MON,preferred,0x0,1"
+            hyprctl eval "hl.dispatch(hl.dsp.dpms('on', '$INTERNAL_MON')); hl.monitor({ output = '$INTERNAL_MON', position = '0x0', scale = 1 })"
             notify-send -u low "Display Manager" "Reset $INTERNAL_MON to default"
             ;;
     esac
@@ -85,42 +85,35 @@ fi
 
 case "$CHOICE" in
     *"Mirror Displays"*)
-        hyprctl keyword monitor "$INTERNAL_MON,preferred,0x0,1"
-        hyprctl keyword monitor "$FIRST_EXT,preferred,auto,1,mirror,$INTERNAL_MON"
+        hyprctl eval "hl.dispatch(hl.dsp.dpms('on', '$INTERNAL_MON')); hl.dispatch(hl.dsp.dpms('on', '$FIRST_EXT')); hl.monitor({ output = '$INTERNAL_MON', position = '0x0', scale = 1 }); hl.monitor({ output = '$FIRST_EXT', mirror = '$INTERNAL_MON' })"
         notify-send -u low -i video-display "Display Manager" "Mirrored $INTERNAL_MON to $FIRST_EXT"
         ;;
     *"Extend Right"*)
-        hyprctl keyword monitor "$INTERNAL_MON,preferred,0x0,1"
-        hyprctl keyword monitor "$FIRST_EXT,preferred,auto-right,1"
+        hyprctl eval "hl.dispatch(hl.dsp.dpms('on', '$INTERNAL_MON')); hl.dispatch(hl.dsp.dpms('on', '$FIRST_EXT')); hl.monitor({ output = '$INTERNAL_MON', position = '0x0', scale = 1 }); hl.monitor({ output = '$FIRST_EXT', mirror = '', position = 'auto-right', scale = 1 })"
         notify-send -u low -i video-display "Display Manager" "Extended desktop to the right ($FIRST_EXT)"
         ;;
     *"Extend Left"*)
-        hyprctl keyword monitor "$INTERNAL_MON,preferred,auto,1"
-        hyprctl keyword monitor "$FIRST_EXT,preferred,auto-left,1"
+        hyprctl eval "hl.dispatch(hl.dsp.dpms('on', '$INTERNAL_MON')); hl.dispatch(hl.dsp.dpms('on', '$FIRST_EXT')); hl.monitor({ output = '$INTERNAL_MON', position = 'auto', scale = 1 }); hl.monitor({ output = '$FIRST_EXT', mirror = '', position = 'auto-left', scale = 1 })"
         notify-send -u low -i video-display "Display Manager" "Extended desktop to the left ($FIRST_EXT)"
         ;;
     *"Extend Above"*)
-        hyprctl keyword monitor "$INTERNAL_MON,preferred,0x0,1"
-        hyprctl keyword monitor "$FIRST_EXT,preferred,auto-up,1"
+        hyprctl eval "hl.dispatch(hl.dsp.dpms('on', '$INTERNAL_MON')); hl.dispatch(hl.dsp.dpms('on', '$FIRST_EXT')); hl.monitor({ output = '$INTERNAL_MON', position = '0x0', scale = 1 }); hl.monitor({ output = '$FIRST_EXT', mirror = '', position = 'auto-up', scale = 1 })"
         notify-send -u low -i video-display "Display Manager" "Extended desktop above ($FIRST_EXT)"
         ;;
     *"Extend Below"*)
-        hyprctl keyword monitor "$INTERNAL_MON,preferred,0x0,1"
-        hyprctl keyword monitor "$FIRST_EXT,preferred,auto-down,1"
+        hyprctl eval "hl.dispatch(hl.dsp.dpms('on', '$INTERNAL_MON')); hl.dispatch(hl.dsp.dpms('on', '$FIRST_EXT')); hl.monitor({ output = '$INTERNAL_MON', position = '0x0', scale = 1 }); hl.monitor({ output = '$FIRST_EXT', mirror = '', position = 'auto-down', scale = 1 })"
         notify-send -u low -i video-display "Display Manager" "Extended desktop below ($FIRST_EXT)"
         ;;
     *"Laptop Display Only"*)
-        hyprctl keyword monitor "$FIRST_EXT,disable"
-        hyprctl keyword monitor "$INTERNAL_MON,preferred,0x0,1"
+        hyprctl eval "hl.dispatch(hl.dsp.dpms('off', '$FIRST_EXT')); hl.dispatch(hl.dsp.dpms('on', '$INTERNAL_MON')); hl.monitor({ output = '$INTERNAL_MON', position = '0x0', scale = 1 })"
         notify-send -u low -i video-display "Display Manager" "Enabled $INTERNAL_MON only ($FIRST_EXT disabled)"
         ;;
     *"External Display Only"*)
-        hyprctl keyword monitor "$INTERNAL_MON,disable"
-        hyprctl keyword monitor "$FIRST_EXT,preferred,0x0,1"
+        hyprctl eval "hl.dispatch(hl.dsp.dpms('off', '$INTERNAL_MON')); hl.dispatch(hl.dsp.dpms('on', '$FIRST_EXT')); hl.monitor({ output = '$FIRST_EXT', mirror = '', position = '0x0', scale = 1 })"
         notify-send -u low -i video-display "Display Manager" "Enabled $FIRST_EXT only ($INTERNAL_MON disabled)"
         ;;
     *"Reset All Displays"*)
-        hyprctl keyword monitor ",preferred,auto,1"
+        hyprctl eval "hl.dispatch(hl.dsp.dpms('on', '$INTERNAL_MON')); hl.dispatch(hl.dsp.dpms('on', '$FIRST_EXT')); hl.monitor({ output = '$INTERNAL_MON', position = '0x0', scale = 1 }); hl.monitor({ output = '$FIRST_EXT', mirror = '', position = 'auto-right', scale = 1 })"
         notify-send -u low -i video-display "Display Manager" "Reset all monitors to default auto layout"
         ;;
 esac
