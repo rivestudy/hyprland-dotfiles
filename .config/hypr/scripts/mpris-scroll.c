@@ -7,7 +7,8 @@
 
 #define DEFAULT_WIDTH 34
 #define DEFAULT_FRAME_MS 140
-#define PAUSE_FRAMES 14 /* Hold ~2 seconds at start and end of scroll */
+#define PAUSE_FRAMES 14       /* Hold ~2 seconds at start and end of scroll */
+#define GONE_GRACE_MS 2500    /* 2.5 second grace period before hiding when no player detected */
 
 typedef struct {
 	PlayerctlPlayerManager *manager;
@@ -24,7 +25,9 @@ typedef struct {
 	gint dir;
 	gint pause_ticks;
 
+	gboolean is_active;
 	guint timer_id;
+	guint gone_timer_id;
 	gchar *last_frame;
 } App;
 
@@ -139,46 +142,55 @@ emit_frame(void)
 	gchar *frame = NULL;
 	gchar *text = NULL;
 	gchar *combined = NULL;
-	const gchar *status = app.status ? app.status : "";
-	gboolean playing = (strcmp(status, "Playing") == 0 || strcmp(status, "Paused") == 0);
+	const gchar *status = app.status ? app.status : "Stopped";
+	gboolean active = app.is_active && (strcmp(status, "Playing") == 0 || strcmp(status, "Paused") == 0);
 
-	if (playing) {
-		const gchar *a = (app.artist && *app.artist) ? app.artist : "(unknown)";
-		const gchar *t = app.title ? app.title : "";
-		combined = g_strdup_printf("%s - %s", a, t);
+	if (active && ((app.title && *app.title) || (app.artist && *app.artist))) {
+		const gchar *a = (app.artist && *app.artist) ? app.artist : "";
+		const gchar *t = (app.title && *app.title) ? app.title : "";
+		if (*a && *t)
+			combined = g_strdup_printf("%s - %s", a, t);
+		else if (*t)
+			combined = g_strdup(t);
+		else
+			combined = g_strdup(a);
+
 		gint total = utf8_display_width(combined);
 
 		if (total <= app.width) {
 			text = center_text(combined, app.width, total);
 		} else {
 			gint max_offset = compute_max_offset(combined, app.width);
-			if (app.pause_ticks > 0) {
-				app.pause_ticks--;
-			} else {
-				app.offset += app.dir;
-				if (app.offset >= max_offset) {
-					app.offset = max_offset;
-					app.dir = -1;
-					app.pause_ticks = PAUSE_FRAMES;
-				} else if (app.offset <= 0) {
-					app.offset = 0;
-					app.dir = 1;
-					app.pause_ticks = PAUSE_FRAMES;
+			if (strcmp(status, "Playing") == 0) {
+				if (app.pause_ticks > 0) {
+					app.pause_ticks--;
+				} else {
+					app.offset += app.dir;
+					if (app.offset >= max_offset) {
+						app.offset = max_offset;
+						app.dir = -1;
+						app.pause_ticks = PAUSE_FRAMES;
+					} else if (app.offset <= 0) {
+						app.offset = 0;
+						app.dir = 1;
+						app.pause_ticks = PAUSE_FRAMES;
+					}
 				}
 			}
 			text = slice_window(combined, app.offset, app.width);
 		}
+		tip = g_strdup_printf("%s: %s - %s - %s\nLeft Click: previous\nMid Click: Play/Pause\nRight Click: Next",
+		                      status, app.player_name ? app.player_name : "",
+		                      app.artist ? app.artist : "", app.title ? app.title : "");
 	} else {
 		text = g_strdup("");
+		tip = g_strdup("");
 	}
 
 	esc_text = json_escape(text);
-	tip = g_strdup_printf("%s: %s - %s - %s\nLeft Click: previous\nMid Click: Pause\nRight Click: Next",
-	                      status, app.player_name ? app.player_name : "",
-	                      app.artist ? app.artist : "", app.title ? app.title : "");
 	esc_tip = json_escape(tip);
 	frame = g_strdup_printf("{\"text\":\"%s\",\"tooltip\":\"%s\",\"alt\":\"%s\",\"class\":\"%s\"}",
-	                        esc_text, esc_tip, status, status);
+	                        esc_text, esc_tip, (*text ? status : "Stopped"), (*text ? status : "Stopped"));
 
 	if (!app.last_frame || strcmp(frame, app.last_frame) != 0) {
 		printf("%s\n", frame);
@@ -209,14 +221,53 @@ sync_timer(void)
 		g_source_remove(app.timer_id);
 		app.timer_id = 0;
 	}
-	if (app.status && (strcmp(app.status, "Playing") == 0 || strcmp(app.status, "Paused") == 0)) {
-		const gchar *a = (app.artist && *app.artist) ? app.artist : "(unknown)";
-		gchar *combined = g_strdup_printf("%s - %s", a, app.title ? app.title : "");
-		if (utf8_display_width(combined) > app.width) {
+	if (app.is_active && app.status && strcmp(app.status, "Playing") == 0) {
+		const gchar *a = (app.artist && *app.artist) ? app.artist : "";
+		const gchar *t = (app.title && *app.title) ? app.title : "";
+		gchar *combined = NULL;
+		if (*a && *t)
+			combined = g_strdup_printf("%s - %s", a, t);
+		else if (*t)
+			combined = g_strdup(t);
+		else
+			combined = g_strdup(a);
+
+		if (combined && utf8_display_width(combined) > app.width) {
 			app.timer_id = g_timeout_add(app.frame_ms, on_timer, NULL);
 		}
 		g_free(combined);
 	}
+}
+
+static const gchar *
+get_player_playback_status(PlayerctlPlayer *p)
+{
+	PlayerctlPlaybackStatus st = PLAYERCTL_PLAYBACK_STATUS_STOPPED;
+	g_object_get(p, "playback-status", &st, NULL);
+	switch (st) {
+	case PLAYERCTL_PLAYBACK_STATUS_PLAYING: return "Playing";
+	case PLAYERCTL_PLAYBACK_STATUS_PAUSED:  return "Paused";
+	default:                                return "Stopped";
+	}
+}
+
+static gboolean
+on_gone_timeout(gpointer user_data)
+{
+	app.gone_timer_id = 0;
+	app.is_active = FALSE;
+	g_free(app.status);
+	g_free(app.player_name);
+	g_free(app.artist);
+	g_free(app.title);
+	app.status = g_strdup("Stopped");
+	app.player_name = g_strdup("");
+	app.artist = g_strdup("");
+	app.title = g_strdup("");
+
+	sync_timer();
+	emit_frame();
+	return G_SOURCE_REMOVE;
 }
 
 static void refresh_active(PlayerctlPlayer *player, gpointer unused, gpointer user_data);
@@ -235,31 +286,32 @@ static void
 refresh_active(PlayerctlPlayer *player, gpointer unused, gpointer user_data)
 {
 	PlayerctlPlayer *best = NULL;
-	gchar *best_status = NULL;
+	const gchar *best_status = NULL;
 
+	/* Priority: Playing > Paused > Stopped */
 	for (guint i = 0; i < app.players->len; i++) {
 		PlayerctlPlayer *p = g_ptr_array_index(app.players, i);
-		gchar *st = NULL;
-		g_object_get(p, "status", &st, NULL);
-		gboolean is_playing = (st && strcmp(st, "Playing") == 0);
+		const gchar *st = get_player_playback_status(p);
+
 		if (!best) {
 			best = p;
-			g_free(best_status);
 			best_status = st;
-		} else if (is_playing) {
-			if (!best_status || strcmp(best_status, "Playing") != 0) {
+		} else if (strcmp(st, "Playing") == 0) {
+			if (strcmp(best_status, "Playing") != 0) {
 				best = p;
-				g_free(best_status);
 				best_status = st;
-			} else {
-				g_free(st);
 			}
-		} else {
-			g_free(st);
+		} else if (strcmp(st, "Paused") == 0) {
+			if (strcmp(best_status, "Playing") != 0 && strcmp(best_status, "Paused") != 0) {
+				best = p;
+				best_status = st;
+			}
 		}
 	}
 
-	if (best) {
+	gboolean has_media = FALSE;
+
+	if (best && (strcmp(best_status, "Playing") == 0 || strcmp(best_status, "Paused") == 0)) {
 		GError *err = NULL;
 		gchar *title = NULL;
 		gchar *artist = NULL;
@@ -277,30 +329,60 @@ refresh_active(PlayerctlPlayer *player, gpointer unused, gpointer user_data)
 			artist = NULL;
 		}
 
-		g_free(app.player_name);
-		g_free(app.artist);
-		g_free(app.title);
-		app.player_name = name ? name : g_strdup("");
-		app.artist = artist ? artist : g_strdup("");
-		app.title = title ? title : g_strdup("");
+		if ((title && *title) || (artist && *artist)) {
+			has_media = TRUE;
 
-		g_free(app.status);
-		app.status = best_status ? best_status : g_strdup("Stopped");
-	} else {
-		g_free(best_status);
-		g_free(app.status);
-		g_free(app.player_name);
-		g_free(app.artist);
-		g_free(app.title);
-		app.status = g_strdup("Stopped");
-		app.player_name = g_strdup("");
-		app.artist = g_strdup("");
-		app.title = g_strdup("");
+			/* Cancel pending gone timeout because we found an active player */
+			if (app.gone_timer_id) {
+				g_source_remove(app.gone_timer_id);
+				app.gone_timer_id = 0;
+			}
+
+			gboolean track_changed = (g_strcmp0(app.title, title) != 0 || g_strcmp0(app.artist, artist) != 0);
+
+			g_free(app.player_name);
+			g_free(app.artist);
+			g_free(app.title);
+			g_free(app.status);
+
+			app.player_name = name ? name : g_strdup("");
+			app.artist = artist ? artist : g_strdup("");
+			app.title = title ? title : g_strdup("");
+			app.status = g_strdup(best_status);
+			app.is_active = TRUE;
+
+			if (track_changed) {
+				app.offset = 0;
+				app.dir = 1;
+				app.pause_ticks = PAUSE_FRAMES;
+			}
+		} else {
+			g_free(name);
+			g_free(title);
+			g_free(artist);
+		}
 	}
 
-	app.offset = 0;
-	app.dir = 1;
-	app.pause_ticks = PAUSE_FRAMES;
+	if (!has_media) {
+		/* If we were previously showing media, start a grace period before declaring it gone */
+		if (app.is_active) {
+			if (!app.gone_timer_id) {
+				app.gone_timer_id = g_timeout_add(GONE_GRACE_MS, on_gone_timeout, NULL);
+			}
+		} else {
+			/* Already inactive */
+			g_free(app.status);
+			g_free(app.player_name);
+			g_free(app.artist);
+			g_free(app.title);
+			app.status = g_strdup("Stopped");
+			app.player_name = g_strdup("");
+			app.artist = g_strdup("");
+			app.title = g_strdup("");
+			app.is_active = FALSE;
+		}
+	}
+
 	sync_timer();
 	emit_frame();
 }
@@ -348,7 +430,9 @@ main(int argc, char **argv)
 	app.offset = 0;
 	app.dir = 1;
 	app.pause_ticks = PAUSE_FRAMES;
+	app.is_active = FALSE;
 	app.timer_id = 0;
+	app.gone_timer_id = 0;
 	app.last_frame = NULL;
 
 	GMainLoop *loop = g_main_loop_new(NULL, FALSE);

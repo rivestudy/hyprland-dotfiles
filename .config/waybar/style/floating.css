@@ -179,11 +179,32 @@ tooltip label{
 	padding-left: 12px;
 	margin: 0 3px;
 }
-/*-----Media pill: stable width + smooth fade on title change-----*/
+/*-----Media pill: stable width + fluid open/close animation-----*/
 #custom-playerctl {
 	font-family: "JetBrainsMono Nerd Font", "Noto Sans Mono CJK JP", "Noto Sans Mono CJK KR", monospace;
 	min-width: 280px;
 	min-height: 25px;
+	opacity: 1;
+	transition: all 0.35s cubic-bezier(.55,-0.68,.48,1.682);
+}
+
+#custom-playerctl.empty,
+#custom-playerctl.Stopped,
+#custom-playerctl.none {
+	background-color: transparent;
+	min-width: 0px;
+	min-height: 0px;
+	padding-left: 0px;
+	padding-right: 0px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	margin-left: 0px;
+	margin-right: 0px;
+	margin-top: 0px;
+	margin-bottom: 0px;
+	opacity: 0;
+	border: none;
+	transition: all 0.35s cubic-bezier(.55,-0.68,.48,1.682);
 }
 /* separators keep transparent so pills stay detached */
 #custom-separator {

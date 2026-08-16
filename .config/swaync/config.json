@@ -66,8 +66,12 @@
                   "command": "bash -c $HOME/.config/hypr/scripts/hyprlock.sh"
               },
               {
-                  "label": "󰍃",
-                  "command": "hyprctl dispatch exit"
+                  "label": "󰍹",
+                  "command": "bash -c $HOME/.config/hypr/scripts/DisplayMode.sh"
+              },
+              {
+                  "label": "󰓃",
+                  "command": "bash -c $HOME/.config/hypr/scripts/AudioSwitcher.sh"
               },
               {
                   "label": "󰀝",
@@ -76,7 +80,6 @@
               {
                   "label": "󰝟",
                   "command": "pactl set-sink-mute @DEFAULT_SINK@ toggle"
-
               }
           ]
       }

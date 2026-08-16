@@ -64,6 +64,8 @@
 	"modules": [
 		"pulseaudio",
 		"pulseaudio#microphone",
+		"custom/audio_sink",
+		"custom/display"
 	]
 },
 
