@@ -1,0 +1,7 @@
+[
+  {
+    "directory": "/home/galang/Development/plugin/arch-hyprland/.config/hypr/scripts",
+    "command": "clang -I/usr/include/playerctl -I/usr/include/gio-unix-2.0 -I/usr/include/glib-2.0 -I/usr/lib/glib-2.0/include -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/elogind -I/usr/include/sysprof-6 -pthread -c mpris-scroll.c",
+    "file": "/home/galang/Development/plugin/arch-hyprland/.config/hypr/scripts/mpris-scroll.c"
+  }
+]

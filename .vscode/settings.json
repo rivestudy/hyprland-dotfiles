@@ -1,0 +1,12 @@
+{
+  "files.associations": {
+    "**/waybar/Modules*": "jsonc",
+    "**/waybar/configs/*": "jsonc",
+    "**/waybar/config": "jsonc",
+    "**/swaync/config.json": "jsonc",
+    "**/hypr/**/*.conf": "hyprlang"
+  },
+  "css.validate": false,
+  "less.validate": false,
+  "scss.validate": false
+}
