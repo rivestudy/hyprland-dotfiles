@@ -1,13 +1,27 @@
 #!/bin/bash
 # /* ---- 💫 https://github.com/JaKooLit 💫 ---- */  ##
-# Scripts for volume controls for audio and mic 
+# Scripts for volume controls for audio and mic with filter-chain unity support
 
 iDIR="$HOME/.config/swaync/icons"
 sDIR="$HOME/.config/hypr/scripts"
 
+# Get target physical sink (bypassing virtual filter sinks to avoid volume multiplication)
+get_sink_arg() {
+    local target
+    target=$(pamixer --list-sinks 2>/dev/null | grep -v "effect_input" | grep -E "Running|Idle" | head -n 1 | cut -d '"' -f 2)
+    if [ -z "$target" ]; then
+        target=$(pamixer --list-sinks 2>/dev/null | grep -v "effect_input" | head -n 1 | cut -d '"' -f 2)
+    fi
+    if [ -n "$target" ]; then
+        echo "--sink $target"
+    fi
+}
+
+SINK_ARG=$(get_sink_arg)
+
 # Get Volume
 get_volume() {
-    volume=$(pamixer --get-volume)
+    volume=$(pamixer $SINK_ARG --get-volume 2>/dev/null || echo "50")
     if [[ "$volume" -eq "0" ]]; then
         echo "Muted"
     else
@@ -41,28 +55,28 @@ notify_user() {
 
 # Increase Volume
 inc_volume() {
-    if [ "$(pamixer --get-mute)" == "true" ]; then
+    if [ "$(pamixer $SINK_ARG --get-mute 2>/dev/null)" == "true" ]; then
         toggle_mute
     else
-        pamixer -i 5 --allow-boost --set-limit 150 && notify_user
+        pamixer $SINK_ARG -i 5 --allow-boost --set-limit 150 && notify_user
     fi
 }
 
 # Decrease Volume
 dec_volume() {
-    if [ "$(pamixer --get-mute)" == "true" ]; then
+    if [ "$(pamixer $SINK_ARG --get-mute 2>/dev/null)" == "true" ]; then
         toggle_mute
     else
-        pamixer -d 5 && notify_user
+        pamixer $SINK_ARG -d 5 && notify_user
     fi
 }
 
 # Toggle Mute
 toggle_mute() {
-	if [ "$(pamixer --get-mute)" == "false" ]; then
-		pamixer -m && notify-send -e -u low -i "$iDIR/volume-mute.png" " Mute"
-	elif [ "$(pamixer --get-mute)" == "true" ]; then
-		pamixer -u && notify-send -e -u low -i "$(get_icon)" " Volume:" " Switched ON"
+	if [ "$(pamixer $SINK_ARG --get-mute 2>/dev/null)" == "false" ]; then
+		pamixer $SINK_ARG -m && notify-send -e -u low -i "$iDIR/volume-mute.png" " Mute"
+	elif [ "$(pamixer $SINK_ARG --get-mute 2>/dev/null)" == "true" ]; then
+		pamixer $SINK_ARG -u && notify-send -e -u low -i "$(get_icon)" " Volume:" " Switched ON"
 	fi
 }
 
@@ -74,6 +88,7 @@ toggle_mic() {
 		pamixer -u --default-source u && notify-send -e -u low -i "$iDIR/microphone.png" " Microphone:" " Switched ON"
 	fi
 }
+
 # Get Mic Icon
 get_mic_icon() {
     current=$(pamixer --default-source --get-volume)
@@ -113,7 +128,7 @@ inc_mic_volume() {
 # Decrease MIC Volume
 dec_mic_volume() {
     if [ "$(pamixer --default-source --get-mute)" == "true" ]; then
-        toggle-mic
+        toggle_mic
     else
         pamixer --default-source -d 5 && notify_mic_user
     fi

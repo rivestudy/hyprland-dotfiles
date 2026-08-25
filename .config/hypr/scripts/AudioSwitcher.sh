@@ -152,6 +152,8 @@ def apply_device(target):
         pass
         
     desc = target.get('desc', '')
+    # Re-sync equalizer on the newly selected device
+    subprocess.run(['/home/galang/.config/hypr/scripts/AudioEnhancer.sh', '--start'], check=False)
     subprocess.run(['notify-send', '-u', 'low', '-i', 'audio-speakers', 'Audio Output Switcher', f'Switched to: {desc}'], check=False)
 
 def main():

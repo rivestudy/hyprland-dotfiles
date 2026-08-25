@@ -59,3 +59,8 @@ hl.window_rule({ match = { title = "^(Save As|Save a File|Pick Files)$" }, cente
 
 hl.window_rule({ match = { initial_title = "Open Files" }, float = true })
 hl.window_rule({ match = { initial_title = "Open Files" }, size = {"70%", "60%"} })
+
+-- PipeWire 16-Band Equalizer GUI
+hl.window_rule({ match = { class = "pipewire-eq-gui" }, float = true })
+hl.window_rule({ match = { class = "pipewire-eq-gui" }, size = {"840", "480"} })
+hl.window_rule({ match = { class = "pipewire-eq-gui" }, center = true })

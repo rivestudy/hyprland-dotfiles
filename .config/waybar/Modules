@@ -327,11 +327,17 @@
 		"car": "",
 		"default": [
 			"", "", "󰕾",  ""
-		],
-		"ignored-sinks": [
-			"Easy Effects Sink"
-		],
+		]
 	},
+	"ignored-sinks": [
+		"Easy Effects Sink",
+		"effect_input.eq16",
+		"PipeWire 16-Band Equalizer",
+		"Built-in Audio (Enhanced)",
+		"Built-in Audio Analog Stereo (Enhanced)",
+		"CX31993 384Khz HIFI AUDIO Analog Stereo (Enhanced)",
+		"Built-in Audio Digital Stereo (HDMI) (Enhanced)"
+	],
 	"scroll-step": 5.0,
 	"on-click": "$HOME/.config/hypr/scripts/volume.sh --toggle",
 	"on-click-right": "$HOME/.config/hypr/scripts/AudioSwitcher.sh",

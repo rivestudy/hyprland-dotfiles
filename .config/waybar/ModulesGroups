@@ -71,6 +71,7 @@
 		"pulseaudio",
 		"pulseaudio#microphone",
 		"custom/audio_sink",
+		"custom/audio_eq",
 		"custom/display"
 	]
 },

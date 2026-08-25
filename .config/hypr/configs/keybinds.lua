@@ -31,6 +31,7 @@ hl.bind(mainMod .. " + H", hl.dsp.exec_cmd("pkill -SIGUSR1 waybar")) -- Hide Way
 hl.bind(mainMod .. " + SHIFT + E", hl.dsp.exec_cmd("kitty yazi")) -- Yazi File Manager
 hl.bind(mainMod .. " + SHIFT + P", hl.dsp.exec_cmd("~/.config/hypr/scripts/DisplayMode.sh")) -- Display Modes (Mirror/Extend)
 hl.bind(mainMod .. " + SHIFT + A", hl.dsp.exec_cmd("~/.config/hypr/scripts/AudioSwitcher.sh")) -- Audio Output Switcher
+hl.bind(mainMod .. " + ALT + A", hl.dsp.exec_cmd("~/.config/hypr/scripts/AudioEnhancer.sh")) -- PipeWire 16-Band Equalizer
 hl.bind(mainMod .. " + X", hl.dsp.exec_cmd("~/.config/hypr/scripts/Wlogout.sh")) -- Power Menu
 
 -- Move focus with mainMod + arrow keys
