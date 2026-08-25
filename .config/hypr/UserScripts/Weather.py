@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # =============================================================================
 # Waybar Weather Module & Interactive Forecast / Settings Menu
-# Uses wttr.in with rich Pango markup popdown tooltip and comprehensive icons
+# Uses wttr.in with rich Pango markup popdown tooltip and robust Nerd Font icons
 # =============================================================================
 import datetime
 import json
@@ -15,6 +15,7 @@ import urllib.request
 CONFIG_FILE = os.path.expanduser("~/.config/hypr/weather_location.json")
 ROFI_CONFIG = os.path.expanduser("~/.config/rofi/config.rasi")
 
+# Standard Nerd Font Weather Glyphs (MDI & Weather Icons, 100% universal support)
 CODE_MAP = {
     # Sunny / Clear
     "113": ("󰖙", "󰖔"),
@@ -23,17 +24,17 @@ CODE_MAP = {
     # Cloudy / Overcast
     "119": ("󰖐", "󰖐"),
     "122": ("󰖐", "󰖐"),
-    # Mist / Fog
-    "143": ("󰜖", "󰜖"),
-    "248": ("󰜖", "󰜖"),
-    "260": ("󰜖", "󰜖"),
+    # Mist / Fog / Haze
+    "143": ("󰖑", "󰖑"),
+    "248": ("󰖑", "󰖑"),
+    "260": ("󰖑", "󰖑"),
     # Patchy rain / Drizzle
     "176": ("󰖖", "󰖖"),
     "185": ("󰖖", "󰖖"),
     "263": ("󰖖", "󰖖"),
     "266": ("󰖖", "󰖖"),
     "281": ("󰖖", "󰖖"),
-    "284": ("󰖖", "󰖖"),
+    "284": ("󰖗", "󰖗"),
     "293": ("󰖖", "󰖖"),
     "296": ("󰖖", "󰖖"),
     "299": ("󰖖", "󰖖"),
@@ -79,7 +80,7 @@ CODE_MAP = {
 def get_weather_icon(code, desc_text="", is_day=True):
     desc = desc_text.lower()
 
-    # 1. Keyword overrides for specific conditions
+    # 1. Keyword overrides for specific descriptions
     if "thunder" in desc or "lightning" in desc or "storm" in desc:
         if "rain" in desc or "shower" in desc:
             return "󰖓"
@@ -92,10 +93,8 @@ def get_weather_icon(code, desc_text="", is_day=True):
         return "󰼶"
     if "sleet" in desc or "ice pellets" in desc or "hail" in desc or "freezing rain" in desc:
         return "󰙾"
-    if "haze" in desc or "smoke" in desc or "smoky" in desc or "dust" in desc or "sand" in desc:
+    if "mist" in desc or "fog" in desc or "haze" in desc or "smoke" in desc or "smoky" in desc or "dust" in desc or "sand" in desc:
         return "󰖑"
-    if "fog" in desc or "mist" in desc:
-        return "󰜖"
     if "heavy rain" in desc or "torrential" in desc or "downpour" in desc:
         return "󰖗"
     if "rain" in desc or "drizzle" in desc or "shower" in desc:
@@ -107,7 +106,7 @@ def get_weather_icon(code, desc_text="", is_day=True):
     if "sunny" in desc or "clear" in desc:
         return "󰖙" if is_day else "󰖔"
 
-    # 2. Weather Code mapping
+    # 2. Weather Code lookup
     if code in CODE_MAP:
         d_icon, n_icon = CODE_MAP[code]
         return d_icon if is_day else n_icon
