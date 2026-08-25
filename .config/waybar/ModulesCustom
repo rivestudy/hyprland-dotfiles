@@ -10,28 +10,30 @@
 		"format-alt-click": "click",
 		"interval": 3600,
 		"return-type": "json",
-		"exec": "python3 /home/galang/.config/hypr/UserScripts/Weather.py",
+		"exec": "python3 $HOME/.config/hypr/UserScripts/weather.py",
+		"on-click": "python3 $HOME/.config/hypr/UserScripts/weather.py --settings",
+		"signal": 8,
 		"tooltip": true
 	},
 	"custom/display": {
 		"format": "󰍹 ",
-		"on-click": "$HOME/.config/hypr/scripts/DisplayMode.sh",
+		"on-click": "$HOME/.config/hypr/scripts/display-mode.sh",
 		"tooltip": true,
 		"tooltip-format": "Display Modes\nLeft Click: Mirror / Extend / Switch Monitors"
 	},
 	"custom/audio_sink": {
 		"format": "󰓃 ",
-		"on-click": "$HOME/.config/hypr/scripts/AudioSwitcher.sh",
+		"on-click": "$HOME/.config/hypr/scripts/audio-switcher.sh",
 		"tooltip": true,
 		"tooltip-format": "Audio Output Switcher\nLeft Click: Switch between Speakers, HDMI, Bluetooth"
 	},
 	"custom/audio_eq": {
 		"format": "󱡏 ",
-		"exec": "python3 $HOME/.config/hypr/scripts/AudioEnhancer.sh --waybar",
+		"exec": "python3 $HOME/.config/hypr/scripts/audio-enhancer.sh --waybar",
 		"interval": 2,
 		"return-type": "json",
-		"on-click": "python3 $HOME/.config/hypr/scripts/AudioEnhancer.sh",
-		"on-click-right": "python3 $HOME/.config/hypr/scripts/AudioEnhancer.sh --toggle",
+		"on-click": "python3 $HOME/.config/hypr/scripts/audio-enhancer.sh",
+		"on-click-right": "python3 $HOME/.config/hypr/scripts/audio-enhancer.sh --toggle",
 		"tooltip": true
 	},
 	"custom/file_manager": {
@@ -62,7 +64,7 @@
 		"format": " ",
 		"on-click": "$HOME/.config/hypr/UserScripts/WallpaperSelect.sh",
 		"on-click-right": "$HOME/.config/hypr/UserScripts/WallpaperRandom.sh",
-		"on-click-middle": "$HOME/.config/hypr/scripts/WaybarStyles.sh",
+		"on-click-middle": "$HOME/.config/hypr/scripts/waybar-styles.sh",
 		"tooltip": true,
 		"tooltip-format": "Left Click: Wallpaper Menu\nMiddle Click: Random wallpaper\nRight Click: Waybar Styles Menu",
 	},
@@ -97,7 +99,7 @@
 	"custom/light_dark": {
 		"format": "󰔎 ",
 		"on-click": "$HOME/.config/hypr/scripts/DarkLight.sh",
-		"on-click-right": "$HOME/.config/hypr/scripts/WaybarStyles.sh",
+		"on-click-right": "$HOME/.config/hypr/scripts/waybar-styles.sh",
 		"on-click-middle": "$HOME/.config/hypr/UserScripts/WallpaperSelect.sh",
 		"tooltip": true,
 		"tooltip-format": "Left Click: Switch Dark-Light Themes\nMiddle Click: Wallpaper Menu\nRight Click: Waybar Styles Menu",
@@ -112,13 +114,13 @@
 		"format": "  ",
 		"on-click": "pkill rofi || rofi -show drun -modi run,drun,filebrowser,window",
 		"on-click-middle": "$HOME/.config/hypr/UserScripts/WallpaperSelect.sh",
-		"on-click-right": "$HOME/.config/hypr/scripts/WaybarLayout.sh",
+		"on-click-right": "$HOME/.config/hypr/scripts/waybar-layout.sh",
 		"tooltip": true,
 		"tooltip-format": "Left Click: Rofi Menu\nMiddle Click: Wallpaper Menu\nRight Click: Waybar Layout Menu",
 	},
 	// This is a custom cava visualizer
 	"custom/cava_mviz": {
-		"exec": "/home/galang/.config/hypr/scripts/waybarcava.sh",
+		"exec": "$HOME/.config/hypr/scripts/waybar-cava.sh",
 		"format": "{}"
 	},
 	"custom/playerctl": {
@@ -126,7 +128,7 @@
 		"justify": "left",
 		"return-type": "json",
 		"max-length": 50,
-		"exec": "/home/galang/.config/hypr/scripts/mpris-scroll",
+		"exec": "$HOME/.config/hypr/scripts/mpris-scroll",
 		"on-click-middle": "playerctl play-pause",
 		"on-click": "playerctl previous",
 		"on-click-right": "playerctl next",
@@ -137,7 +139,7 @@
 	},
 	"custom/power": {
 		"format": "⏻",
-		"on-click": "$HOME/.config/hypr/scripts/Wlogout.sh",
+		"on-click": "$HOME/.config/hypr/scripts/wlogout.sh",
 		"on-click-right": "$HOME/.config/hypr/scripts/ChangeBlur.sh",
 		"tooltip": true,
 		"tooltip-format": "Logout Menu",

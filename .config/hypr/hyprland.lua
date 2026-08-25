@@ -41,7 +41,7 @@ require("configs.tags")
 require("configs.looknfeel")
 
 ------------------ ANIMATIONS ------------------
-require("configs.UserAnimations")
+require("configs.animations")
 
 -- Ref https://wiki.hyprland.org/Configuring/Workspace-Rules/
 -- "Smart gaps" / "No gaps when only"
