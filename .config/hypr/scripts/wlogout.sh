@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env bash
 if pgrep -x wlogout >/dev/null; then
     pkill -x wlogout
 else

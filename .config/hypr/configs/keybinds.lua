@@ -1,5 +1,7 @@
 -- See https://wiki.hyprland.org/Configuring/Keywords/
 
+local home        = os.getenv("HOME") or "/home/galang"
+local script_dir  = home .. "/.config/hypr/scripts"
 local terminal    = "kitty"
 local fileManager = "nautilus"
 local menu        = "rofi -show drun"
@@ -15,24 +17,24 @@ hl.bind(mainMod .. " + Space", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mainMod .. " + D", hl.dsp.exec_cmd(menu))
 hl.bind(mainMod .. " + P", hl.dsp.window.pseudo()) -- dwindle
 hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit")) -- dwindle
-hl.bind(mainMod .. " + R", hl.dsp.exec_cmd("~/.config/hypr/scripts/waybar-restart.sh"))
+hl.bind(mainMod .. " + R", hl.dsp.exec_cmd(script_dir .. "/waybar-restart.sh"))
 hl.bind(mainMod .. " + B", hl.dsp.exec_cmd('xdg-open "https://"')) -- default browser
-hl.bind(mainMod .. " + L", hl.dsp.exec_cmd("~/.config/hypr/scripts/hyprlock.sh"))
+hl.bind(mainMod .. " + L", hl.dsp.exec_cmd(script_dir .. "/hyprlock.sh"))
 hl.bind(mainMod .. " + SHIFT + F", hl.dsp.window.fullscreen())
-hl.bind(mainMod .. " + SHIFT + S", hl.dsp.exec_cmd("~/.config/hypr/scripts/screenshot.sh"))
-hl.bind(mainMod .. " + W", hl.dsp.exec_cmd("~/.config/hypr/scripts/wallpaper-picker.sh"))
-hl.bind(mainMod .. " + SHIFT + Q", hl.dsp.exec_cmd("~/.config/hypr/scripts/kill-active-process.sh")) -- Kill active process
+hl.bind(mainMod .. " + SHIFT + S", hl.dsp.exec_cmd(script_dir .. "/screenshot.sh"))
+hl.bind(mainMod .. " + W", hl.dsp.exec_cmd(script_dir .. "/wallpaper-picker.sh"))
+hl.bind(mainMod .. " + SHIFT + Q", hl.dsp.exec_cmd(script_dir .. "/kill-active-process.sh")) -- Kill active process
 hl.bind(mainMod .. " + C", hl.dsp.exec_cmd("hyprpicker -a"))
-hl.bind(mainMod .. " + V", hl.dsp.exec_cmd("~/.config/hypr/scripts/cliphist-picker.sh")) -- Clipboard history picker (thumbnails for images)
+hl.bind(mainMod .. " + V", hl.dsp.exec_cmd(script_dir .. "/cliphist-picker.sh")) -- Clipboard history picker (thumbnails for images)
 hl.bind(mainMod .. " + SHIFT + C", hl.dsp.exec_cmd("cliphist wipe")) -- Clear clipboard history
-hl.bind(mainMod .. " + CTRL + B", hl.dsp.exec_cmd("~/.config/hypr/scripts/waybar-styles.sh")) -- Waybar Styles Menu
-hl.bind(mainMod .. " + ALT + B", hl.dsp.exec_cmd("~/.config/hypr/scripts/waybar-layout.sh")) -- Waybar Layout Menu
+hl.bind(mainMod .. " + CTRL + B", hl.dsp.exec_cmd(script_dir .. "/waybar-styles.sh")) -- Waybar Styles Menu
+hl.bind(mainMod .. " + ALT + B", hl.dsp.exec_cmd(script_dir .. "/waybar-layout.sh")) -- Waybar Layout Menu
 hl.bind(mainMod .. " + H", hl.dsp.exec_cmd("pkill -SIGUSR1 waybar")) -- Hide Waybar
 hl.bind(mainMod .. " + SHIFT + E", hl.dsp.exec_cmd("kitty yazi")) -- Yazi File Manager
-hl.bind(mainMod .. " + SHIFT + P", hl.dsp.exec_cmd("~/.config/hypr/scripts/display-mode.sh")) -- Display Modes (Mirror/Extend)
-hl.bind(mainMod .. " + SHIFT + A", hl.dsp.exec_cmd("~/.config/hypr/scripts/audio-switcher.sh")) -- Audio Output Switcher
-hl.bind(mainMod .. " + ALT + A", hl.dsp.exec_cmd("~/.config/hypr/scripts/audio-enhancer.sh")) -- PipeWire 16-Band Equalizer
-hl.bind(mainMod .. " + X", hl.dsp.exec_cmd("~/.config/hypr/scripts/wlogout.sh")) -- Power Menu
+hl.bind(mainMod .. " + SHIFT + P", hl.dsp.exec_cmd(script_dir .. "/display-mode.sh")) -- Display Modes (Mirror/Extend)
+hl.bind(mainMod .. " + SHIFT + A", hl.dsp.exec_cmd(script_dir .. "/audio-switcher.sh")) -- Audio Output Switcher
+hl.bind(mainMod .. " + ALT + A", hl.dsp.exec_cmd(script_dir .. "/audio-enhancer.sh")) -- PipeWire 16-Band Equalizer
+hl.bind(mainMod .. " + X", hl.dsp.exec_cmd(script_dir .. "/wlogout.sh")) -- Power Menu
 
 -- Move focus with mainMod + arrow keys
 hl.bind(mainMod .. " + left", hl.dsp.focus({ direction = "left" }))
@@ -60,10 +62,6 @@ for i = 1, 10 do
     hl.bind(mainMod .. " + SHIFT + " .. key, hl.dsp.window.move({ workspace = i }))
 end
 
--- Example special workspace (scratchpad)
--- hl.bind(mainMod .. " + S", hl.dsp.workspace.toggle_special("magic"))
--- hl.bind(mainMod .. " + SHIFT + S", hl.dsp.window.move({ workspace = "special:magic" }))
-
 -- Scroll through existing workspaces with mainMod + scroll
 hl.bind(mainMod .. " + mouse_down", hl.dsp.focus({ workspace = "e+1" }))
 hl.bind(mainMod .. " + mouse_up", hl.dsp.focus({ workspace = "e-1" }))
@@ -73,12 +71,12 @@ hl.bind(mainMod .. " + mouse:272", hl.dsp.window.drag(), { mouse = true })
 hl.bind(mainMod .. " + mouse:273", hl.dsp.window.resize(), { mouse = true })
 
 -- Laptop multimedia keys for volume and LCD brightness
-hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd("~/.config/hypr/scripts/volume.sh --inc"), { repeating = true, locked = true })
-hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd("~/.config/hypr/scripts/volume.sh --dec"), { repeating = true, locked = true })
-hl.bind("XF86AudioMute", hl.dsp.exec_cmd("~/.config/hypr/scripts/volume.sh --toggle"), { repeating = true, locked = true })
+hl.bind("XF86AudioRaiseVolume", hl.dsp.exec_cmd(script_dir .. "/volume.sh --inc"), { repeating = true, locked = true })
+hl.bind("XF86AudioLowerVolume", hl.dsp.exec_cmd(script_dir .. "/volume.sh --dec"), { repeating = true, locked = true })
+hl.bind("XF86AudioMute", hl.dsp.exec_cmd(script_dir .. "/volume.sh --toggle"), { repeating = true, locked = true })
 hl.bind("XF86AudioMicMute", hl.dsp.exec_cmd("wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"), { repeating = true, locked = true })
-hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd("~/.config/hypr/scripts/brightness.sh --inc"), { repeating = true, locked = true })
-hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd("~/.config/hypr/scripts/brightness.sh --dec"), { repeating = true, locked = true })
+hl.bind("XF86MonBrightnessUp", hl.dsp.exec_cmd(script_dir .. "/brightness.sh --inc"), { repeating = true, locked = true })
+hl.bind("XF86MonBrightnessDown", hl.dsp.exec_cmd(script_dir .. "/brightness.sh --dec"), { repeating = true, locked = true })
 
 -- Requires playerctl
 hl.bind("XF86AudioNext", hl.dsp.exec_cmd("playerctl next"), { locked = true })
