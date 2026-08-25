@@ -1,1 +1,0 @@
-kill-active-process.sh

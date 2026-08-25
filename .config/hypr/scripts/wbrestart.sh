@@ -1,1 +1,0 @@
-waybar-restart.sh

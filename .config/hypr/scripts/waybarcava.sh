@@ -1,1 +1,0 @@
-waybar-cava.sh
