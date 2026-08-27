@@ -21,7 +21,8 @@ hl.on("hyprland.start", function()
     hl.exec_cmd("swaync")
     hl.exec_cmd("/usr/lib/hyprpolkitagent/hyprpolkitagent")
     hl.exec_cmd("hypridle")
-    hl.exec_cmd("~/.config/hypr/scripts/cliphist-listen.sh")
+    local home = os.getenv("HOME") or "/home/galang"
+    hl.exec_cmd(home .. "/.config/hypr/scripts/cliphist-listen.sh")
 end)
 
 ------------------ PERMISSIONS ------------------
