@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env bash
 # Region screenshot: copy to clipboard AND save to disk
 dir="$HOME/Pictures/Screenshots"
 mkdir -p "$dir"

@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/usr/bin/env bash
 # cliphist-picker: rofi clipboard history with image thumbnails
 # Requires: cliphist, wl-clipboard, rofi, ImageMagick (magick)
 # Usage: bound to SUPER+V in keybinds.lua

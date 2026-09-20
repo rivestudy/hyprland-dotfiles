@@ -32,24 +32,24 @@ DEFAULT_PRESETS = {
 CSS_STYLE = b"""
 window {
     background-color: #181825;
-    border: 2px solid #45475a;
-    border-radius: 16px;
+    border: 1px solid #45475a;
+    border-radius: 0px;
 }
 .header-box {
-    padding: 14px 18px 10px 18px;
+    padding: 10px 14px 8px 14px;
     border-bottom: 1px solid #313244;
 }
 .title-label {
-    font-size: 15px;
+    font-size: 14px;
     font-weight: bold;
     color: #cdd6f4;
 }
 .sub-label {
-    font-size: 12px;
+    font-size: 11px;
     color: #a6adc8;
 }
 .slider-column {
-    padding: 6px 3px;
+    padding: 4px 2px;
 }
 .slider-val {
     font-size: 11px;
@@ -63,18 +63,18 @@ window {
 }
 scale trough {
     background-color: #313244;
-    border-radius: 4px;
-    min-width: 6px;
+    border-radius: 0px;
+    min-width: 4px;
 }
 scale highlight {
     background-color: #89b4fa;
-    border-radius: 4px;
+    border-radius: 0px;
 }
 scale slider {
     background-color: #cdd6f4;
-    border-radius: 50%;
-    min-width: 18px;
-    min-height: 18px;
+    border-radius: 0px;
+    min-width: 14px;
+    min-height: 14px;
 }
 scale slider:hover {
     background-color: #b4befe;
@@ -82,9 +82,9 @@ scale slider:hover {
 button {
     background-color: #313244;
     color: #cdd6f4;
-    border-radius: 8px;
+    border-radius: 0px;
     border: 1px solid #45475a;
-    padding: 6px 14px;
+    padding: 4px 10px;
     font-weight: bold;
 }
 button:hover {
@@ -93,15 +93,15 @@ button:hover {
 .close-btn {
     background-color: #f38ba8;
     color: #11111b;
-    border-radius: 8px;
-    padding: 4px 10px;
+    border-radius: 0px;
+    padding: 4px 8px;
     font-weight: bold;
 }
 .close-btn:hover {
     background-color: #eba0ac;
 }
 switch {
-    border-radius: 12px;
+    border-radius: 0px;
 }
 switch:checked {
     background-color: #a6e3a1;
@@ -109,7 +109,7 @@ switch:checked {
 combobox button {
     background-color: #313244;
     color: #cdd6f4;
-    border-radius: 8px;
+    border-radius: 0px;
 }
 """
 
