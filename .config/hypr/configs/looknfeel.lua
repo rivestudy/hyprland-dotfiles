@@ -2,10 +2,10 @@ local colors = require("colors")
 
 hl.config({
     general = {
-        gaps_in = 5,
-        gaps_out = 10,
+        gaps_in = 2,
+        gaps_out = 3,
 
-        border_size = 2,
+        border_size = 1,
 
         col = {
             active_border = colors.outline,
@@ -23,8 +23,8 @@ hl.config({
 
     -- https://wiki.hyprland.org/Configuring/Variables/#decoration
     decoration = {
-        rounding = 10,
-        rounding_power = 2,
+        rounding = 2,
+        rounding_power = 1,
 
         -- Change transparency of focused and unfocused windows
         active_opacity = 1.0,

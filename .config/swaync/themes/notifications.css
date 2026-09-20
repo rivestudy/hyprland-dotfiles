@@ -5,20 +5,11 @@
 @define-color urgent          @on_secondary_fixed;
 
 * {
-
-  /*background-alt:        @color1;      Buttons background */
-  /*selected:              @color2;      Button selected */
-  /*hover:                 @color5;      Hover button */
-  /*urgent:                @color6;      Urgency critical */
-  /*text-selected:         @background; */
-
   color: @text;
-
   all: unset;
-  font-size: 14px;
+  font-size: 13px;
   font-family: "JetBrains Mono Nerd Font";
-  transition: 200ms;
-
+  transition: 100ms;
 }
 
 .notification-row {
@@ -28,17 +19,17 @@
 }
 
 .floating-notifications.background .notification-row .notification-background {
-  background-color: rgba(0, 0, 0, 0.5);
-  box-shadow: 0 0 8px 0 rgba(0,0,0,.6);
+  background-color: rgba(0, 0, 0, 0.75);
+  box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.6);
   border: 1px solid @selected;
-  border-radius: 24px;
-  margin: 16px;
+  border-radius: 0px;
+  margin: 6px 12px;
   padding: 0;
 }
 
 .floating-notifications.background .notification-row .notification-background .notification {
   padding: 6px;
-  border-radius: 12px;
+  border-radius: 0px;
 }
 
 .floating-notifications.background .notification-row .notification-background .notification.critical {
@@ -46,17 +37,17 @@
 }
 
 .floating-notifications.background .notification-row .notification-background .notification .notification-content {
-  margin: 14px;
+  margin: 10px;
 }
 
 .floating-notifications.background .notification-row .notification-background .notification > *:last-child > * {
-  min-height: 3.4em;
+  min-height: 2.8em;
 }
 
 .floating-notifications.background .notification-row .notification-background .notification > *:last-child > * .notification-action {
-  border-radius: 8px;
-  background-color: @background-alt ;
-  margin: 6px;
+  border-radius: 0px;
+  background-color: @background-alt;
+  margin: 4px;
   border: 1px solid transparent;
 }
 
@@ -71,13 +62,13 @@
 }
 
 .image {
-  margin: 10px 20px 10px 0px;
-  border-radius: 10px;
+  margin: 6px 12px 6px 0px;
+  border-radius: 0px;
 }
 
 .summary {
   font-weight: 800;
-  font-size: 1rem;
+  font-size: 0.95rem;
 }
 
 .body {
@@ -85,9 +76,9 @@
 }
 
 .floating-notifications.background .notification-row .notification-background .close-button {
-  margin: 6px;
+  margin: 4px;
   padding: 2px;
-  border-radius: 6px;
+  border-radius: 0px;
   background-color: transparent;
   border: 1px solid transparent;
 }
@@ -109,4 +100,3 @@
 .notification.normal progress {
   background-color: @hover;
 }
-
