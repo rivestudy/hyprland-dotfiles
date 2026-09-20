@@ -24,7 +24,7 @@ window {
 
     /* brutalist properties */
     enabled:                     true;
-    border:                      1px solid;
+    border:                      1px;
     border-color:                @outline;
     border-radius:               0px;
     cursor:                      "default";
@@ -64,7 +64,7 @@ inputbar {
     spacing:                     8px;
     padding:                     10px 14px;
     border-radius:               0px;
-    border:                      1px solid;
+    border:                      1px;
     border-color:                @outline-variant;
     background-color:            @on-primary;
     text-color:                  @on-surface;
@@ -98,7 +98,7 @@ mode-switcher {
 button {
     padding:                     10px 14px;
     border-radius:               0px;
-    border:                      1px solid;
+    border:                      1px;
     border-color:                @outline-variant;
     background-color:            @on-primary;
     text-color:                  inherit;
@@ -134,7 +134,8 @@ element {
     spacing:                     12px;
     padding:                     6px 10px;
     border-radius:               0px;
-    border:                      1px solid transparent;
+    border:                      1px;
+    border-color:                transparent;
     background-color:            transparent;
     text-color:                  @on-surface;
     cursor:                      pointer;
@@ -197,7 +198,7 @@ message {
 textbox {
     padding:                     10px 14px;
     border-radius:               0px;
-    border:                      1px solid;
+    border:                      1px;
     border-color:                @outline-variant;
     background-color:            @on-primary;
     text-color:                  @on-surface;
@@ -208,7 +209,7 @@ textbox {
 error-message {
     padding:                     10px 14px;
     border-radius:               0px;
-    border:                      1px solid;
+    border:                      1px;
     border-color:                @error;
     background-color:            @on-primary;
     text-color:                  @on-surface;
