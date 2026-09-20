@@ -64,3 +64,8 @@ hl.window_rule({ match = { initial_title = "Open Files" }, size = {"70%", "60%"}
 hl.window_rule({ match = { class = "pipewire-eq-gui" }, float = true })
 hl.window_rule({ match = { class = "pipewire-eq-gui" }, size = {"840", "480"} })
 hl.window_rule({ match = { class = "pipewire-eq-gui" }, center = true })
+
+-- Wallpaper Carousel Picker
+hl.window_rule({ match = { class = "^(wallpaper-carousel)$" }, float = true })
+hl.window_rule({ match = { class = "^(wallpaper-carousel)$" }, size = {"1080", "580"} })
+hl.window_rule({ match = { class = "^(wallpaper-carousel)$" }, center = true })
