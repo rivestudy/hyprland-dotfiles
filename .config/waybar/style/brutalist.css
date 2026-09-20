@@ -4,8 +4,8 @@
 	font-family: "JetBrainsMono Nerd Font Propo";
 	font-weight: 600;
 	min-height: 0;
-	font-size: 92%;
-	letter-spacing: 0.3px;
+	font-size: 96%;
+	letter-spacing: 0.2px;
 	font-feature-settings: '"zero", "ss01", "ss02", "ss03", "ss04", "ss05", "cv31"';
 }
 
@@ -22,7 +22,7 @@ tooltip {
 	background: rgba(10, 10, 10, 0.95);
 	border: 1px solid @outline;
 	border-radius: 0px;
-	padding: 3px 10px;
+	padding: 4px 8px;
 	font-size: 90%;
 }
 
@@ -35,7 +35,7 @@ tooltip label {
 .modules-center,
 .modules-left {
 	color: @secondary;
-	padding: 0px 2px;
+	padding: 0px 1px;
 }
 
 /*-----modules indv----*/
@@ -45,8 +45,11 @@ tooltip label {
 	background-color: transparent;
 	box-shadow: none;
 	text-shadow: none;
-	padding: 1px 8px;
-	margin: 0 2px;
+	font-size: 112%;
+	font-weight: 700;
+	padding: 1px 5px;
+	margin: 0 1px;
+	min-width: 20px;
 	border-radius: 0px;
 	border: 1px solid transparent;
 	transition: background-color 0.1s ease, color 0.1s ease, border-color 0.1s ease;
@@ -65,10 +68,11 @@ tooltip label {
 	color: @on_primary;
 	background-color: @primary;
 	border: 1px solid @primary;
-	padding: 1px 12px;
-	margin: 0 2px;
+	padding: 1px 6px;
+	margin: 0 1px;
+	min-width: 20px;
 	border-radius: 0px;
-	font-weight: 700;
+	font-weight: 800;
 }
 
 #taskbar button.active:hover,
@@ -76,8 +80,8 @@ tooltip label {
 	color: @on_primary;
 	background-color: @primary;
 	border: 1px solid @on_primary_container;
-	padding: 1px 12px;
-	margin: 0 2px;
+	padding: 1px 6px;
+	margin: 0 1px;
 	border-radius: 0px;
 }
 
@@ -96,8 +100,8 @@ tooltip label {
 	background-color: alpha(@surface_container_lowest, 0.85);
 	border: 1px solid alpha(@outline_variant, 0.5);
 	border-radius: 0px;
-	padding: 2px 10px;
-	margin: 0 2px;
+	padding: 2px 6px;
+	margin: 0 1px;
 	transition: border-color 0.1s ease, background-color 0.1s ease;
 }
 
@@ -165,9 +169,13 @@ tooltip label {
 	background-color: alpha(@surface_container_lowest, 0.85);
 	border: 1px solid alpha(@outline_variant, 0.5);
 	border-radius: 0px;
-	padding: 2px 10px;
-	margin: 0 2px;
+	padding: 2px 6px;
+	margin: 0 1px;
 	transition: border-color 0.1s ease, background-color 0.1s ease;
+}
+
+#clock {
+	font-weight: 700;
 }
 
 #backlight:hover,
@@ -204,8 +212,10 @@ tooltip label {
 /*-----Media module: brutalist sharp box-----*/
 #custom-playerctl {
 	font-family: "JetBrainsMono Nerd Font", "Noto Sans Mono CJK JP", "Noto Sans Mono CJK KR", monospace;
-	min-width: 220px;
+	min-width: 180px;
 	min-height: 20px;
+	padding: 2px 6px;
+	font-size: 92%;
 	border-radius: 0px;
 	opacity: 1;
 	transition: min-width 0.15s ease, opacity 0.15s ease;
